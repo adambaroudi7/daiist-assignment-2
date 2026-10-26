@@ -341,3 +341,67 @@ The critical next step is to fill in the actual confusion matrix prior to select
 ## Generative AI use disclosure
 
 I used ChatGPT to help understand the assignment requirements, organize the project, explain technical concepts, and draft parts of the report.
+
+<!-- BEGIN MEASURED RESULTS -->
+## Measured results from my training run
+
+These results come from my trained model and test predictions.
+
+### Dataset composition
+- train: 5646 images; 1251 contain NO-Hardhat.
+- val: 775 images; 242 contain NO-Hardhat.
+- test: 326 images; 47 contain NO-Hardhat.
+
+Annotated objects per class:
+- Hardhat: 6813
+- NO-Hardhat: 2531
+- NO-Safety Vest: 1487
+- Person: 7168
+- Safety Vest: 8019
+Median NO-Hardhat box: 12.6% of image width, 11.7% of height, and 1.59% of image area.
+
+### Model evaluation
+- Training epochs: 15
+- Input size: 640
+- Training device: 0
+- Overall AP50: 0.6777
+- Overall mAP50-95: 0.4846
+
+Per-class performance:
+- Hardhat: precision 0.954, recall 0.713, AP50 0.874, mAP50-95 0.603.
+- NO-Hardhat: precision 0.308, recall 0.448, AP50 0.273, mAP50-95 0.128.
+- NO-Safety Vest: precision 0.645, recall 0.444, AP50 0.477, mAP50-95 0.254.
+- Person: precision 0.846, recall 0.756, AP50 0.828, mAP50-95 0.666.
+- Safety Vest: precision 0.903, recall 0.896, AP50 0.936, mAP50-95 0.772.
+
+The pretrained COCO baseline has no NO-Hardhat class, so its direct zero-shot recall for this violation is zero. The trivial predict-nothing baseline also has zero violation recall. Neither provides a directly comparable five-class AP score.
+
+### Cost and thresholds
+- Production violation base rate assumed: 10%.
+- False positive: EUR 10.
+- False negative: EUR 200.
+- Human review: EUR 1 per image.
+- Validation-selected single threshold: 0.020.
+- Lower review threshold: 0.010.
+- Upper review threshold: 0.470.
+- Hybrid test cost per 1,000: EUR 1266.37.
+- AI-alone test cost per 1,000: EUR 3960.19.
+- Doing nothing: EUR 20,000 per 1,000 cases.
+- Reviewing every case: EUR 1,000 per 1,000 cases.
+
+### Human review and confusion matrix
+- True positives (automatic FAIL): 9
+- False positives (automatic FAIL): 3
+- True negatives (automatic PASS): 201
+- False negatives (automatic PASS): 2
+- Reviewed positives: 36
+- Reviewed negatives: 75
+- Test review share, production-adjusted: 31.9%
+- Expected images reviewed daily: 159.27
+- Expected review minutes daily: 79.63
+- Estimated reviewer staffing (FTE): 0.1659
+
+Thresholds were selected using validation predictions and evaluated separately on test predictions. Costs are weighted to the assumed production base rate. Human reviewers are assumed to resolve reviewed cases correctly.
+
+The measured results do not establish performance on real construction-site cameras. Individual prediction errors still require visual inspection.
+<!-- END MEASURED RESULTS -->
